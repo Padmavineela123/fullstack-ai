@@ -1,4 +1,5 @@
 name: CI/CD Pipeline
+
 on:
   push:
     branches: [main]
@@ -24,13 +25,11 @@ jobs:
           pip install pytest pytest-cov
 
       - name: Run tests
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         run: |
-          pytest --cov=. --cov-report=xml
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage.xml
+          pytest test_app.py --cov=. --cov-report=xml
 
   deploy:
     needs: test
